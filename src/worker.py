@@ -233,6 +233,3 @@ async def on_fetch(request, env, ctx):
 
     ctx.waitUntil(handle_update(env, update))
     return Response.new("ok", Object.fromEntries(to_js({"status": 200})))
-
-def fetch_handler(request, env, ctx):
-    return on_fetch(request, env, ctx)
