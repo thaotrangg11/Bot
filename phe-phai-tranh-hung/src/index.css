@@ -1,0 +1,24 @@
+/* Reset cơ bản */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0a0a1a;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  color: #e2e8f0;
+  overflow-x: hidden;
+}
+
+/* Canvas do Pixi.js tạo ra, đảm bảo không bị tràn */
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* Scrollbar tối */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a1a; }
+::-webkit-scrollbar-thumb { background: #3b3b6b; border-radius: 3px; }
