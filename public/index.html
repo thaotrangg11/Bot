@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090510"><meta name="description" content="Mystic Tarot — hành trình chiêm nghiệm cùng Luna và trí tuệ AI.">
+  <title>Mystic Tarot — The Celestial Reading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="grain"></div><div class="aurora aurora-a"></div><div class="aurora aurora-b"></div>
+  <header class="nav wrap">
+    <a class="brand" href="#home"><span class="brand-mark">✧</span><span>MYSTIC <i>TAROT</i><small>THE CELESTIAL READING</small></span></a>
+    <nav><a href="#experience">Trải bài</a><a href="#deck">Bộ bài</a><a href="#luna">Gặp Luna</a></nav>
+    <a class="nav-cta" href="#experience">Bắt đầu <span>↗</span></a>
+    <button class="menu-toggle" aria-label="Mở menu">☰</button>
+  </header>
+  <main>
+    <section class="hero wrap" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> A QUIET MOMENT WITH THE UNIVERSE</div>
+        <h1>Let the stars<br>whisper <em>to your soul.</em></h1>
+        <p class="hero-lead">Có những câu trả lời không đến từ việc tìm kiếm, mà đến từ khoảnh khắc ta đủ tĩnh lặng để lắng nghe chính mình.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#experience">Khám phá thông điệp <span>✦</span></a><a class="text-link" href="#deck">Khám phá 78 lá bài <span>↗</span></a></div>
+        <div class="hero-note"><span class="tiny-orbit">✧</span><span>78 lá bài · AI luận giải chuyên sâu · Luna đồng hành</span></div>
+      </div>
+      <div class="hero-art" aria-label="Minh họa lá bài Tarot và vòng tròn hoàng đạo">
+        <div class="zodiac zodiac-outer"></div><div class="zodiac zodiac-inner"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-card card-back back-one"><div class="back-ornament">☾<b>✧</b>☼</div></div>
+        <div class="hero-card card-back back-two"><div class="back-ornament">☼<b>☾</b>✧</div></div>
+        <div class="hero-card hero-front"><img src="https://petaloverflow.github.io/tarot-api/cards/ar17.jpg" alt="The Star — lá bài Ngôi Sao" onerror="this.style.display='none'"><div class="front-fallback">✧<strong>THE<br>STAR</strong>☾</div></div>
+        <div class="floating-star star-a">✦</div><div class="floating-star star-b">✧</div><div class="floating-star star-c">✧</div>
+        <div class="art-caption"><span>XVII</span><span>THE STAR · HOPE & RENEWAL</span></div>
+      </div>
+      <div class="hero-bottom"><span>SCROLL TO DISCOVER</span><span class="scroll-line"></span><span>01 / 04</span></div>
+    </section>
+
+    <section class="manifesto wrap"><div class="section-kicker">A PERSONAL RITUAL</div><p>Không phải để biết chắc ngày mai.<br><em>Mà để hiểu rõ hơn hôm nay.</em></p><div class="manifesto-rule"></div><span>Tarot là tấm gương của nội tâm — Luna giúp bạn đọc những biểu tượng ấy bằng sự dịu dàng và góc nhìn sâu sắc.</span></section>
+
+    <section class="experience-section" id="experience"><div class="wrap">
+      <div class="section-head"><div><div class="section-kicker">YOUR MOMENT OF CLARITY</div><h2>Một câu hỏi.<br><em>Một hành trình.</em></h2></div><p>Hãy hít thở thật chậm, nghĩ về điều đang khiến trái tim bạn bận tâm, rồi để những lá bài kể câu chuyện của chúng.</p></div>
+      <div class="reading-panel">
+        <div class="panel-top"><span><i class="live-dot"></i> THE READING ROOM</span><span>✧ &nbsp; TAKE YOUR TIME &nbsp; ✧</span></div>
+        <div class="reading-form">
+          <label for="question">ĐIỀU BẠN MUỐN LẮNG NGHE</label>
+          <textarea id="question" maxlength="700" placeholder="Ví dụ: Con đường công việc và tình cảm của mình trong thời gian tới sẽ như thế nào?" rows="3"></textarea>
+          <div class="form-row"><div class="field"><label for="topic">CHỦ ĐỀ</label><select id="topic"><option>Tổng quan</option><option>Tình yêu & các mối quan hệ</option><option>Công việc & sự nghiệp</option><option>Tài chính</option><option>Phát triển bản thân</option></select></div><div class="field"><label>TRẢI BÀI</label><div class="spread-options"><button class="spread-option active" data-count="3">03 <small>lá</small></button><button class="spread-option" data-count="5">05 <small>lá</small></button><button class="spread-option" data-count="7">07 <small>lá</small></button><button class="spread-option" data-count="10">10 <small>lá</small></button></div></div></div>
+          <button class="button button-primary draw-button" id="draw">Xào bài & rút bài <span>✦</span></button>
+          <p class="form-hint">✧ Hãy chọn câu hỏi thật lòng. Mỗi trải bài là một góc nhìn để bạn chiêm nghiệm.</p>
+        </div>
+        <div class="draw-stage hidden" id="drawStage"><div class="stage-heading"><span class="section-kicker">THE CARDS ARE SPEAKING</span><h3>Những thông điệp dành cho bạn</h3><p id="drawSub">Luna đang kết nối những biểu tượng...</p></div><div class="drawn-cards" id="drawnCards"></div><div class="reading-actions"><button class="button button-primary" id="analyze">Luna luận giải trải bài <span>✧</span></button><button class="button button-ghost" id="redraw">Rút lại bài</button></div></div>
+        <div class="analysis hidden" id="analysis"><div class="analysis-title"><div class="luna-avatar">☾</div><div><span class="section-kicker">LUNA'S INTERPRETATION</span><h3>Lời thì thầm từ những lá bài</h3></div></div><div class="analysis-content" id="analysisContent"></div><div class="voice-controls"><button class="button button-primary" id="speak">▶ &nbsp; Nghe Luna đọc</button><button class="button button-ghost" id="stopSpeak">Dừng đọc</button><span id="voiceStatus">Giọng đọc AI · Cần cấu hình ElevenLabs</span></div></div>
+      </div>
+    </div></section>
+
+    <section class="deck-section wrap" id="deck"><div class="section-head"><div><div class="section-kicker">THE COMPLETE COLLECTION</div><h2>78 cánh cửa<br><em>của sự thấu hiểu.</em></h2></div><p>Mỗi lá bài mang một biểu tượng, một câu chuyện và một lời mời nhìn sâu hơn vào thế giới bên trong bạn.</p></div><div class="deck-toolbar"><div class="deck-tabs"><button class="deck-tab active" data-filter="all">Tất cả · 78</button><button class="deck-tab" data-filter="major">Major Arcana · 22</button><button class="deck-tab" data-filter="minor">Minor Arcana · 56</button></div><div class="deck-search"><span>⌕</span><input id="deckSearch" placeholder="Tìm lá bài..."></div></div><div class="deck-grid" id="deckGrid"></div><div class="deck-footer"><span>THE RIDER–WAITE–SMITH COLLECTION</span><span>ILLUSTRATIONS · PUBLIC DOMAIN · 1909</span></div></section>
+
+    <section class="luna-section" id="luna"><div class="wrap luna-wrap"><div class="luna-art"><div class="luna-halo"></div><div class="luna-moon">☾</div><div class="luna-spark">✧</div><div class="luna-orbit"></div></div><div class="luna-copy"><div class="section-kicker">YOUR GENTLE GUIDE</div><h2>Meet <em>Luna.</em></h2><p class="luna-quote">“Mình không ở đây để quyết định thay bạn. Mình ở đây để cùng bạn nhìn thấy những điều có thể bạn đã bỏ quên trong chính trái tim mình.”</p><p>Luna sử dụng AI để kết nối ý nghĩa của từng lá bài, vị trí và câu hỏi của bạn thành một câu chuyện liền mạch — dịu dàng, sâu sắc và gần gũi.</p><div class="luna-pills"><span>✧ AI insight</span><span>☾ Giọng đọc tự nhiên</span><span>♡ Không phán xét</span></div></div></div></section>
+  </main>
+  <footer class="footer wrap"><a class="brand" href="#home"><span class="brand-mark">✧</span><span>MYSTIC <i>TAROT</i><small>THE CELESTIAL READING</small></span></a><p>Tarot is a mirror, not a verdict. Trust your own light.</p><span>© 2026 MYSTIC TAROT</span></footer>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="modal hidden" id="cardModal"><div class="modal-backdrop"></div><div class="modal-box"><button class="modal-close" id="modalClose">×</button><img id="modalImage" alt=""><div><span class="section-kicker" id="modalArcana"></span><h3 id="modalTitle"></h3><p id="modalKeywords"></p></div></div></div>
+  <script type="module" src="/js/app.js"></script>
+</body></html>
