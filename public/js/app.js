@@ -1,4 +1,3 @@
-
 import { deck, spreads } from './deck.js';
 
 const $ = (selector) => document.querySelector(selector);
