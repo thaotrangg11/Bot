@@ -68,5 +68,12 @@ app.post('/api/voice', async (req, res) => {
 
 app.get('/api/status', (_req, res) => res.json({ ai: Boolean(process.env.OPENAI_API_KEY), voice: Boolean(process.env.ELEVENLABS_API_KEY && process.env.ELEVENLABS_VOICE_ID) }));
 app.get('*', (_req, res) => res.sendFile(path.join(root, 'public', 'index.html')));
-const port = Number(process.env.PORT || 3000);
-app.listen(port, () => console.log(`Mystic Tarot AI đang chạy tại http://localhost:${port}`));
+export default app;
+
+if (!process.env.NETLIFY) {
+  const port = Number(process.env.PORT || 3000);
+
+  app.listen(port, () => {
+    console.log(`Mystic Tarot AI đang chạy tại http://localhost:${port}`);
+  });
+}
