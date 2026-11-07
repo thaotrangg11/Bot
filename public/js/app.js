@@ -1,3 +1,4 @@
+
 import { deck, spreads } from './deck.js';
 
 const $ = (selector) => document.querySelector(selector);
@@ -10,7 +11,6 @@ let voiceAudio = null;
 let deckFilter = 'all';
 let imageMap = new Map();
 let isShuffling = false;
-let isRevealing = false;
 
 const toast = (message) => {
   const el = $('#toast');
@@ -31,30 +31,52 @@ function norm(value) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/đ/g, 'd')
+    .replace(/the /g, '')
     .replace(/[^a-z0-9]/g, '');
 }
 
-/*
- * Hình ảnh:
- * Ưu tiên dữ liệu ảnh lấy từ API bộ bài.
- * Nếu API không hoạt động, sử dụng đường dẫn ảnh trong deck.js
- * nếu dữ liệu lá bài có khai báo imgName hoặc image.
- */
+// Đường dẫn ảnh dự phòng cho bộ bài Rider–Waite–Smith.
+function fallbackImage(card) {
+  if (!card) return '';
+
+  const id = String(card.id);
+
+  if (id.startsWith('m')) {
+    const number = Number(id.slice(1));
+    if (!Number.isInteger(number) || number < 0 || number > 21) {
+      return '';
+    }
+
+    return `https://petaloverflow.github.io/tarot-api/cards/ar${String(number).padStart(2, '0')}.jpg`;
+  }
+
+  const [suit, rank] = id.split('-').map(Number);
+  const suitNames = ['wands', 'cups', 'swords', 'pentacles'];
+
+  if (
+    !Number.isInteger(suit) ||
+    !Number.isInteger(rank) ||
+    suit < 0 || suit > 3 ||
+    rank < 0 || rank > 13
+  ) {
+    return '';
+  }
+
+  return `https://petaloverflow.github.io/tarot-api/cards/${suitNames[suit]}${String(rank + 1).padStart(2, '0')}.jpg`;
+}
 
 function getImage(card) {
   if (!card) return '';
 
-  if (card.image) return card.image;
-
-  if (card.imgName) {
-    const found = imageMap.get(norm(card.imgName));
-    if (found) return found;
+  if (card.image || card.imageUrl || card.img) {
+    return card.image || card.imageUrl || card.img;
   }
 
-  const found = imageMap.get(norm(card.name));
-  if (found) return found;
+  const mapped =
+    imageMap.get(norm(card.imgName)) ||
+    imageMap.get(norm(card.name));
 
-  return card.img || card.imageUrl || '';
+  return mapped || fallbackImage(card);
 }
 
 async function loadImages() {
@@ -64,20 +86,22 @@ async function loadImages() {
     );
 
     if (!response.ok) {
-      throw new Error('Không tải được dữ liệu hình ảnh');
+      throw new Error('Không tải được dữ liệu ảnh');
     }
 
     const data = await response.json();
 
-    for (const item of data) {
-      if (item.name && item.image) {
-        imageMap.set(norm(item.name), item.image);
+    if (Array.isArray(data)) {
+      for (const item of data) {
+        const image = item.image || item.img || item.imageUrl;
+
+        if (item.name && image) {
+          imageMap.set(norm(item.name), image);
+        }
       }
     }
-
-    console.log('Đã tải dữ liệu ảnh Tarot:', imageMap.size);
   } catch (error) {
-    console.warn('Không tải được API ảnh Tarot:', error);
+    console.warn('Dùng đường dẫn ảnh dự phòng:', error);
   }
 
   renderDeck();
@@ -102,8 +126,9 @@ function imageHTML(card, className = '') {
       alt="${card.vi || card.name}"
       loading="lazy"
       onerror="
-        this.style.display='none';
-        this.parentElement.classList.add('image-unavailable');
+        this.onerror=null;
+        this.src='${fallbackImage(card)}';
+        this.classList.add('fallback-image');
       "
     >
   `;
@@ -134,12 +159,7 @@ function renderDeck() {
     <article class="deck-item" data-id="${card.id}">
       <div class="deck-image-wrap">
         ${imageHTML(card, 'deck-card-image')}
-        <div class="image-error-message">
-          <span>✧</span>
-          <small>Tarot Card</small>
-        </div>
       </div>
-
       <strong>${card.vi}</strong>
       <small>${card.name}</small>
     </article>
@@ -163,9 +183,14 @@ function openCard(card) {
   if (!modal) return;
 
   const image = $('#modalImage');
+
   if (image) {
     image.src = getImage(card);
     image.alt = card.vi || card.name;
+    image.onerror = () => {
+      image.onerror = null;
+      image.src = fallbackImage(card);
+    };
   }
 
   if ($('#modalArcana')) {
@@ -206,7 +231,8 @@ function pickCards() {
   selected = pool.slice(0, count).map((card, index) => ({
     ...card,
     reversed: Math.random() < 0.28,
-    position: spreads[count]?.[index] || `Vị trí ${index + 1}`
+    position:
+      spreads[count]?.[index] || `Vị trí ${index + 1}`
   }));
 }
 
@@ -222,15 +248,9 @@ function renderDrawn() {
     >
       <div class="drawn-card-inner">
         ${imageHTML(card, 'drawn-card-image')}
-
-        <div class="image-error-message">
-          <span>✧</span>
-          <small>${card.vi}</small>
-        </div>
       </div>
 
       <strong>${card.vi}</strong>
-
       <small>${card.position}</small>
 
       <span class="card-orientation">
@@ -306,7 +326,6 @@ async function drawCards() {
 
   const stage = $('#drawStage');
   stage?.classList.remove('hidden');
-
   stage?.classList.add('shuffling');
 
   await new Promise((resolve) => setTimeout(resolve, 1100));
@@ -315,7 +334,6 @@ async function drawCards() {
   renderDrawn();
 
   stage?.classList.remove('shuffling');
-
   $('#analysis')?.classList.add('hidden');
 
   if ($('#drawSub')) {
@@ -447,32 +465,28 @@ async function speak() {
     voiceAudio = new Audio(voiceUrl);
 
     voiceAudio.onended = () => {
-      $('#voiceStatus').textContent = 'Luna đã đọc xong';
+      if ($('#voiceStatus')) {
+        $('#voiceStatus').textContent = 'Luna đã đọc xong';
+      }
 
-      setButtonLoading(
-        button,
-        false,
-        '▶ Nghe lại Luna'
-      );
+      setButtonLoading(button, false, '▶ Nghe lại Luna');
     };
 
     await voiceAudio.play();
 
-    $('#voiceStatus').textContent =
-      'Luna đang đọc · Giọng AI';
+    if ($('#voiceStatus')) {
+      $('#voiceStatus').textContent = 'Luna đang đọc · Giọng AI';
+    }
 
     button.textContent = '♫ Đang phát...';
   } catch (error) {
     toast(error.message);
 
-    $('#voiceStatus').textContent =
-      'Chưa thể phát giọng AI';
+    if ($('#voiceStatus')) {
+      $('#voiceStatus').textContent = 'Chưa thể phát giọng AI';
+    }
 
-    setButtonLoading(
-      button,
-      false,
-      '▶ Nghe Luna đọc'
-    );
+    setButtonLoading(button, false, '▶ Nghe Luna đọc');
   }
 }
 
@@ -482,7 +496,9 @@ function stopVoice() {
     voiceAudio.currentTime = 0;
   }
 
-  $('#voiceStatus').textContent = 'Đã dừng';
+  if ($('#voiceStatus')) {
+    $('#voiceStatus').textContent = 'Đã dừng';
+  }
 
   setButtonLoading(
     $('#speak'),
@@ -506,15 +522,12 @@ function setupEvents() {
   });
 
   $('#analyze')?.addEventListener('click', analyzeReading);
-
   $('#speak')?.addEventListener('click', speak);
-
   $('#stopSpeak')?.addEventListener('click', stopVoice);
 
   $('#deckSearch')?.addEventListener('input', renderDeck);
 
   $('#modalClose')?.addEventListener('click', closeCard);
-
   $('.modal-backdrop')?.addEventListener('click', closeCard);
 
   document.querySelectorAll('.spread-option').forEach((button) => {
