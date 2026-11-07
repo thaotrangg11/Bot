@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystic Tarot ✦ Bói Bài Tarot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --gold:#d4af37;
+  --gold-light:#f4e4a6;
+  --purple-deep:#0a0318;
+  --purple:#1a0b2e;
+  --purple-light:#2d1b4e;
+  --text:#e8e0f0;
+  --text-dim:#a99fc0;
+}
+
+html,body{min-height:100%}
+
+body{
+  font-family:'Be Vietnam Pro',sans-serif;
+  background:radial-gradient(ellipse at 50% 0%,#2d1b4e 0%,#150826 45%,#0a0318 75%,#050110 100%);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+  padding-bottom:40px;
+}
+
+/* ═══════ STARFIELD ═══════ */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{
+  position:absolute;background:#fff;border-radius:50%;opacity:.6;
+  animation:twinkle infinite ease-in-out;
+  box-shadow:0 0 4px rgba(255,255,255,.8);
+}
+@keyframes twinkle{
+  0%,100%{opacity:.15;transform:scale(.7)}
+  50%{opacity:1;transform:scale(1.3)}
+}
+
+/* ═══════ MOON ═══════ */
+.moon{
+  position:fixed;top:30px;right:40px;width:60px;height:60px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#f4e4a6,#c9a227 70%,#8a6d1a);
+  box-shadow:0 0 40px rgba(244,228,166,.6),0 0 80px rgba(244,228,166,.3);
+  opacity:.85;z-index:1;pointer-events:none;
+}
+@media(max-width:600px){.moon{width:40px;height:40px;top:15px;right:20px}}
+
+/* ═══════ HEADER ═══════ */
+.header{text-align:center;padding:50px 20px 30px;position:relative;z-index:2}
+.header-symbol{
+  font-size:28px;color:var(--gold);letter-spacing:12px;margin-bottom:10px;
+  animation:glow 3s ease-in-out infinite;
+}
+@keyframes glow{
+  0%,100%{text-shadow:0 0 15px var(--gold)}
+  50%{text-shadow:0 0 30px var(--gold),0 0 50px rgba(212,175,55,.5)}
+}
+h1{
+  font-family:'Cinzel',serif;
+  font-size:clamp(32px,6vw,56px);
+  font-weight:700;letter-spacing:4px;
+  background:linear-gradient(180deg,#f4e4a6 0%,#d4af37 50%,#8a6d1a 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-transform:uppercase;margin-bottom:10px;
+}
+.subtitle{color:var(--text-dim);font-size:14px;letter-spacing:2px;font-weight:300}
+
+/* ═══════ LAYOUT ═══════ */
+.container{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+.section{padding:20px 0}
+.hidden{display:none!important}
+
+/* ═══════ SPREAD SELECT ═══════ */
+.spread-select h2{
+  font-family:'Cinzel',serif;text-align:center;font-size:18px;
+  color:var(--text-dim);font-weight:400;letter-spacing:3px;
+  margin-bottom:30px;text-transform:uppercase;
+}
+.spread-buttons{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.spread-btn{
+  background:linear-gradient(145deg,rgba(45,27,78,.8),rgba(26,11,46,.9));
+  border:1px solid rgba(212,175,55,.35);
+  border-radius:16px;padding:30px 40px;color:var(--text);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;
+  min-width:200px;transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;font-family:inherit;
+}
+.spread-btn::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(212,175,55,.2),transparent 70%);
+  opacity:0;transition:opacity .3s;
+}
+.spread-btn:hover{
+  transform:translateY(-6px);border-color:var(--gold);
+  box-shadow:0 10px 40px rgba(212,175,55,.25),inset 0 0 30px rgba(212,175,55,.05);
+}
+.spread-btn:hover::before{opacity:1}
+.spread-icon{font-size:36px}
+.spread-title{font-family:'Cinzel',serif;font-size:20px;font-weight:600;color:var(--gold-light)}
+.spread-desc{font-size:13px;color:var(--text-dim)}
+
+/* ═══════ DECK ═══════ */
+.deck-section{text-align:center}
+.hint{
+  font-size:16px;color:var(--gold-light);margin-bottom:30px;
+  letter-spacing:1px;font-style:italic;min-height:24px;
+}
+.deck{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:14px;
+  margin-bottom:20px;perspective:1200px;
+}
+
+/* ═══════ CARD ═══════ */
+.card{
+  width:clamp(64px,8vw,92px);
+  aspect-ratio:5/8;
+  cursor:pointer;perspective:1000px;position:relative;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  animation:cardIn .5s cubic-bezier(.4,0,.2,1) backwards;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(30px) scale(.85)}
+}
+.card:hover:not(.picked){transform:translateY(-16px) scale(1.06);z-index:10}
+.card.picked{transform:translateY(-12px) scale(1.05);pointer-events:none}
+
+.card-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .8s cubic-bezier(.4,0,.2,1);
+}
+.card.flipped .card-inner{transform:rotateY(180deg)}
+
+.card-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:8px;overflow:hidden;
+}
+
+/* Mặt sau */
+.card-back{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(212,175,55,.2) 0%,transparent 55%),
+    repeating-conic-gradient(from 0deg at 50% 50%,#1a0b2e 0deg 20deg,#24123f 20deg 40deg);
+  border:1.5px solid var(--gold);
+  box-shadow:inset 0 0 20px rgba(0,0,0,.7),0 4px 15px rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;
+}
+.card-back::before{
+  content:'';position:absolute;inset:6px;
+  border:1px solid rgba(212,175,55,.4);border-radius:4px;
+}
+.card-back::after{
+  content:'✦';font-size:28px;color:var(--gold);
+  text-shadow:0 0 12px var(--gold),0 0 25px rgba(212,175,55,.5);
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:.7;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.15)}
+}
+
+/* Mặt trước */
+.card-front{
+  transform:rotateY(180deg);
+  background:linear-gradient(160deg,#faf3dd 0%,#ecdcae 50%,#d4c48a 100%);
+  border:1.5px solid var(--gold);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px;gap:6px;
+  box-shadow:0 4px 15px rgba(0,0,0,.5);
+}
+.card-symbol{
+  font-size:clamp(24px,3vw,32px);
+  transition:transform .5s;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));
+}
+.card-front.is-reversed .card-symbol{transform:rotate(180deg)}
+.card-name{
+  font-family:'Cinzel',serif;
+  font-size:clamp(8px,1vw,10px);
+  font-weight:700;text-align:center;color:#2d1b4e;
+  line-height:1.2;letter-spacing:.3px;
+}
+
+/* Badge số thứ tự */
+.badge{
+  position:absolute;top:-8px;right:-8px;width:24px;height:24px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#f4e4a6,#d4af37);
+  color:#2d1b4e;font-weight:700;font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(212,175,55,.6);z-index:5;
+  animation:pop .3s cubic-bezier(.4,0,1.6,1);
+}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* ═══════ BUTTON RESET ═══════ */
+.btn-reset{
+  background:transparent;border:1px solid rgba(212,175,55,.5);
+  color:var(--gold-light);padding:12px 30px;border-radius:30px;
+  font-family:'Be Vietnam Pro',sans-serif;font-size:14px;
+  letter-spacing:1px;cursor:pointer;transition:all .3s;
+}
+.btn-reset:hover{
+  background:rgba(212,175,55,.1);border-color:var(--gold);
+  box-shadow:0 0 20px rgba(212,175,55,.3);
+}
+
+/* ═══════ READING ═══════ */
+.reading{margin-top:20px;padding-top:30px;border-top:1px solid rgba(212,175,55,.2)}
+.reading-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+.reading-card{
+  background:linear-gradient(160deg,rgba(45,27,78,.85),rgba(20,8,38,.9));
+  border:1px solid rgba(212,175,55,.3);border-radius:16px;
+  padding:24px 20px;text-align:center;position:relative;overflow:hidden;
+  opacity:0;animation:rise .6s cubic-bezier(.4,0,.2,1) forwards;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reading-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.rc-position{
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;font-weight:600;
+}
+.rc-symbol{font-size:40px;margin-bottom:10px;filter:drop-shadow(0 0 12px rgba(212,175,55,.4))}
+.rc-name{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:var(--gold-light);margin-bottom:4px}
+.rc-en{font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-bottom:14px;font-style:italic}
+.rc-en .rev-tag{color:#ff9b9b;font-style:normal;font-weight:600}
+.rc-meaning{font-size:13.5px;line-height:1.7;color:#d5cce6;text-align:left}
+
+.reading-summary{
+  text-align:center;margin-top:30px;padding:20px;
+  font-style:italic;color:var(--text-dim);font-size:14px;
+  letter-spacing:1px;animation:rise .8s .5s cubic-bezier(.4,0,.2,1) backwards;
+}
+
+/* ═══════ FOOTER ═══════ */
+.footer{
+  text-align:center;padding:40px 20px 30px;color:var(--text-dim);
+  font-size:12px;letter-spacing:1px;position:relative;z-index:2;
+}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="moon"></div>
+
+<header class="header">
+  <div class="header-symbol">✦</div>
+  <h1>Mystic Tarot</h1>
+  <p class="subtitle">Lắng nghe vũ trụ — Khám phá vận mệnh</p>
+</header>
+
+<main class="container">
+
+  <!-- Chọn kiểu trải bài -->
+  <section id="spread-select" class="section spread-select">
+    <h2>Chọn kiểu trải bài</h2>
+    <div class="spread-buttons">
+      <button class="spread-btn" id="btn-1">
+        <span class="spread-icon">🌙</span>
+        <span class="spread-title">Một lá</span>
+        <span class="spread-desc">Thông điệp cho hôm nay</span>
+      </button>
+      <button class="spread-btn" id="btn-3">
+        <span class="spread-icon">✨</span>
+        <span class="spread-title">Ba lá</span>
+        <span class="spread-desc">Quá khứ · Hiện tại · Tương lai</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Bộ bài -->
+  <section id="deck-section" class="section deck-section hidden">
+    <p class="hint" id="hint"></p>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <!-- Kết quả -->
+  <section id="reading" class="section reading hidden">
+    <div class="reading-grid" id="reading-grid"></div>
+    <div class="reading-summary" id="reading-summary"></div>
+  </section>
+
+  <!-- Nút trải lại -->
+  <div id="reset-wrap" class="hidden" style="text-align:center;margin-top:24px">
+    <button class="btn-reset" id="btn-reset">↺ Trải bài mới</button>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>✦ Tarot chỉ mang tính chất tham khảo và giải trí ✦</p>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   DỮ LIỆU 78 LÁ BÀI
+   ═══════════════════════════════════════════ */
+
+const MAJOR = [
+  {name:"Chàng Khờ",en:"The Fool",symbol:"🃏",
+   upright:"Khởi đầu mới, tinh thần phiêu lưu, sự ngây thơ trong sáng. Bạn đang đứng trước một hành trình mới — hãy tin vào trực giác và bước đi với niềm tin.",
+   reversed:"Sự liều lĩnh thiếu suy nghĩ, nỗi sợ bước ra khỏi vùng an toàn, hoặc sự ngây thơ bị lợi dụng."},
+  {name:"Nhà Ảo Thuật",en:"The Magician",symbol:"🎩",
+   upright:"Bạn có đủ mọi công cụ và khả năng để hiện thực hóa ước mơ. Ý chí mạnh mẽ, sáng tạo và khả năng biến ý tưởng thành hiện thực.",
+   reversed:"Thao túng, lừa dối, tài năng chưa được khai thác hoặc sử dụng sai mục đích."},
+  {name:"Nữ Tư Tế",en:"The High Priestess",symbol:"🌙",
+   upright:"Trực giác, bí ẩn, tri thức tiềm ẩn. Hãy lắng nghe tiếng nói bên trong và tin vào cảm nhận của mình.",
+   reversed:"Bỏ qua trực giác, bí mật bị che giấu, mất kết nối với bản thân."},
+  {name:"Hoàng Hậu",en:"The Empress",symbol:"👑",
+   upright:"Sự sinh sôi, nuôi dưỡng, tình mẫu tử, vẻ đẹp và sáng tạo. Một thời kỳ sung mãn và tràn đầy yêu thương.",
+   reversed:"Sự phụ thuộc, thiếu chăm sóc bản thân, sáng tạo bị tắc nghẽn."},
+  {name:"Hoàng Đế",en:"The Emperor",symbol:"🏛️",
+   upright:"Quyền lực, ổn định, kỷ luật, sự lãnh đạo vững vàng. Bạn đang kiểm soát được tình hình.",
+   reversed:"Độc đoán, cứng nhắc, mất kiểm soát hoặc lạm dụng quyền lực."},
+  {name:"Giáo Hoàng",en:"The Hierophant",symbol:"📜",
+   upright:"Truyền thống, niềm tin, sự hướng dẫn tâm linh, học hỏi từ người đi trước.",
+   reversed:"Nổi loạn chống lại quy tắc, phá vỡ truyền thống, hoặc nghi ngờ niềm tin."},
+  {name:"Tình Nhân",en:"The Lovers",symbol:"💕",
+   upright:"Tình yêu, sự hòa hợp, lựa chọn quan trọng của trái tim, mối quan hệ gắn kết.",
+   reversed:"Bất hòa, lựa chọn sai lầm, mất cân bằng trong các mối quan hệ."},
+  {name:"Cỗ Xe",en:"The Chariot",symbol:"🏇",
+   upright:"Ý chí, quyết tâm, chiến thắng nhờ kiểm soát và tập trung. Tiến về phía trước với sức mạnh.",
+   reversed:"Mất phương hướng, thiếu kiểm soát, năng lượng bị phân tán."},
+  {name:"Sức Mạnh",en:"Strength",symbol:"🦁",
+   upright:"Sức mạnh nội tâm, lòng can đảm, kiên nhẫn và lòng trắc ẩn — những phẩm chất chinh phục mọi thứ.",
+   reversed:"Yếu đuối, thiếu tự tin, để cảm xúc lấn át lý trí."},
+  {name:"Ẩn Sĩ",en:"The Hermit",symbol:"🕯️",
+   upright:"Sự chiêm nghiệm, tìm kiếm chân lý bên trong, thời gian tĩnh lặng để hiểu mình.",
+   reversed:"Cô lập, cô đơn, trốn tránh thực tại."},
+  {name:"Bánh Xe Số Phận",en:"Wheel of Fortune",symbol:"🎡",
+   upright:"Vận may, chu kỳ mới, sự thay đổi tích cực. Định mệnh đang mỉm cười với bạn.",
+   reversed:"Vận rủi, chu kỳ tiêu cực, chống lại sự thay đổi."},
+  {name:"Công Lý",en:"Justice",symbol:"⚖️",
+   upright:"Công bằng, sự thật, nhân quả. Những gì bạn gieo sẽ được gặt xứng đáng.",
+   reversed:"Bất công, thiên vị, trốn tránh trách nhiệm."},
+  {name:"Người Treo Ngược",en:"The Hanged Man",symbol:"🙃",
+   upright:"Buông bỏ, thay đổi góc nhìn, hy sinh vì mục tiêu lớn hơn. Đôi khi dừng lại chính là tiến bước.",
+   reversed:"Trì hoãn, hy sinh vô ích, không chịu buông bỏ."},
+  {name:"Tử Thần",en:"Death",symbol:"💀",
+   upright:"Kết thúc để mở ra khởi đầu mới, sự chuyển hóa mạnh mẽ. Hãy để điều cũ qua đi.",
+   reversed:"Sợ hãi sự thay đổi, bám víu vào quá khứ, chuyển hóa bị trì hoãn."},
+  {name:"Tiết Độ",en:"Temperance",symbol:"🍷",
+   upright:"Cân bằng, hài hòa, kiên nhẫn, sự pha trộn khéo léo giữa các mặt của cuộc sống.",
+   reversed:"Mất cân bằng, thái quá, thiếu kiên nhẫn."},
+  {name:"Ác Quỷ",en:"The Devil",symbol:"😈",
+   upright:"Cám dỗ, ràng buộc, nghiện ngập, những nỗi sợ vô hình đang trói buộc bạn.",
+   reversed:"Giải phóng khỏi ràng buộc, nhận ra sức mạnh để thoát khỏi xiềng xích."},
+  {name:"Tòa Tháp",en:"The Tower",symbol:"🗼",
+   upright:"Biến cố đột ngột, sụp đổ để xây dựng lại, sự thật phơi bày. Đau đớn nhưng cần thiết.",
+   reversed:"Né tránh thảm họa, sợ hãi thay đổi, hoặc biến cố nhẹ hơn dự kiến."},
+  {name:"Ngôi Sao",en:"The Star",symbol:"⭐",
+   upright:"Hy vọng, chữa lành, cảm hứng, niềm tin vào tương lai tươi sáng.",
+   reversed:"Mất hy vọng, thiếu niềm tin, cảm giác bị ngắt kết nối với vũ trụ."},
+  {name:"Mặt Trăng",en:"The Moon",symbol:"🌕",
+   upright:"Ảo ảnh, nỗi sợ vô thức, trực giác mạnh mẽ. Hãy cẩn thận với những điều chưa rõ ràng.",
+   reversed:"Sự thật được hé lộ, nỗi sợ tan biến, thoát khỏi ảo tưởng."},
+  {name:"Mặt Trời",en:"The Sun",symbol:"☀️",
+   upright:"Niềm vui, thành công, sự sống động, năng lượng tích cực tràn đầy. Mọi thứ đang tỏa sáng.",
+   reversed:"Thiếu tự tin, trì hoãn niềm vui, thành công bị che khuất tạm thời."},
+  {name:"Phán Xét",en:"Judgement",symbol:"📯",
+   upright:"Thức tỉnh, sự tha thứ, tái sinh. Tiếng gọi của số phận đang thôi thúc bạn.",
+   reversed:"Tự trách móc, bỏ lỡ cơ hội thức tỉnh, sợ hãi sự thay đổi."},
+  {name:"Thế Giới",en:"The World",symbol:"🌍",
+   upright:"Hoàn thành, thành tựu, sự viên mãn. Bạn đã đi đến đích của một hành trình.",
+   reversed:"Thiếu kết thúc, cảm giác dang dở, trì hoãn thành công."}
+];
+
+const SUITS = {
+  wands:     {name:"Gậy",      en:"Wands",     symbol:"🔥", theme:"đam mê, hành động và sáng tạo"},
+  cups:      {name:"Cốc",      en:"Cups",      symbol:"💧", theme:"cảm xúc, tình yêu và trực giác"},
+  swords:    {name:"Kiếm",     en:"Swords",    symbol:"⚔️", theme:"lý trí, sự thật và xung đột"},
+  pentacles: {name:"Đồng Xu",  en:"Pentacles", symbol:"🪙", theme:"vật chất, tiền tài và sự nghiệp"}
+};
+
+const RANKS = [
+  {en:"Ace",    name:"Át",         up:"Khởi đầu mới, cơ hội thuần khiết",           rev:"Bỏ lỡ cơ hội, khởi đầu chệch hướng"},
+  {en:"Two",    name:"Hai",        up:"Cân bằng, lựa chọn, hợp tác",                 rev:"Mất cân bằng, do dự, chia rẽ"},
+  {en:"Three",  name:"Ba",         up:"Phát triển, sáng tạo, hợp tác nhóm",          rev:"Trì trệ, thiếu hợp tác, kế hoạch dang dở"},
+  {en:"Four",   name:"Bốn",        up:"Ổn định, an toàn, nền tảng vững chắc",        rev:"Bám víu, trì trệ, thiếu linh hoạt"},
+  {en:"Five",   name:"Năm",        up:"Thử thách, xung đột, mất mát",                rev:"Vượt qua thử thách, hòa giải, hồi phục"},
+  {en:"Six",    name:"Sáu",        up:"Hòa hợp, hồi phục, sẻ chia",                  rev:"Bất hòa, ích kỷ, mất cân bằng cho – nhận"},
+  {en:"Seven",  name:"Bảy",        up:"Đánh giá, kiên nhẫn, chiến lược",             rev:"Thiếu kiên nhẫn, lừa dối, mất phương hướng"},
+  {en:"Eight",  name:"Tám",        up:"Tiến bộ, chuyển động, nỗ lực",                rev:"Trì hoãn, cản trở, nỗ lực vô ích"},
+  {en:"Nine",   name:"Chín",       up:"Gần hoàn thành, kiên trì, tự lập",            rev:"Lo lắng, kiệt sức, thiếu tự tin"},
+  {en:"Ten",    name:"Mười",       up:"Hoàn thành, viên mãn, chu kỳ khép lại",       rev:"Dang dở, gánh nặng, chu kỳ chưa kết thúc"},
+  {en:"Page",   name:"Tiểu Đồng",  up:"Khám phá, học hỏi, tin tức mới",              rev:"Thiếu chín chắn, tin xấu, bốc đồng"},
+  {en:"Knight", name:"Kỵ Sĩ",      up:"Hành động, theo đuổi mục tiêu, nhiệt huyết",  rev:"Bốc đồng, thiếu kiên định, thất thường"},
+  {en:"Queen",  name:"Nữ Hoàng",   up:"Nuôi dưỡng, trực giác, làm chủ cảm xúc",      rev:"Kiểm soát quá mức, thiếu tự tin, lạnh lùng"},
+  {en:"King",   name:"Vua",        up:"Làm chủ, lãnh đạo, thành thạo",               rev:"Độc đoán, lạm dụng quyền lực, thiếu trách nhiệm"}
+];
+
+function buildDeck(){
+  const deck = [];
+  MAJOR.forEach(c => deck.push({...c, arcana:'major'}));
+  for (const [, suit] of Object.entries(SUITS)){
+    RANKS.forEach(r => {
+      deck.push({
+        name: `${r.name} ${suit.name}`,
+        en: `${r.en} of ${suit.en}`,
+        symbol: suit.symbol,
+        arcana: 'minor',
+        upright: `${r.up}, đặc biệt trong lĩnh vực ${suit.theme}.`,
+        reversed: `${r.rev}, đặc biệt liên quan đến ${suit.theme}.`
+      });
+    });
+  }
+  return deck;
+}
+
+/* ═══════════════════════════════════════════
+   TIỆN ÍCH
+   ═══════════════════════════════════════════ */
+
+const $ = s => document.querySelector(s);
+
+function shuffle(arr){
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const POSITIONS = {
+  1: ['Thông điệp của bạn'],
+  3: ['Quá khứ', 'Hiện tại', 'Tương lai']
+};
+
+const state = {
+  needed: 0,
+  deck: [],
+  picked: [],
+  locked: false
+};
+
+/* ═══════════════════════════════════════════
+   NỀN SAO
+   ═══════════════════════════════════════════ */
+
+function renderStars(){
+  const container = $('#stars');
+  let html = '';
+  for (let i = 0; i < 120; i++){
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const size = Math.random() * 2 + 1;
+    const delay = (Math.random() * 5).toFixed(2);
+    const dur = (2 + Math.random() * 3).toFixed(2);
+    html += `<div class="star" style="left:${x}%;top:${y}%;width:${size}px;height:${size}px;animation-delay:${delay}s;animation-duration:${dur}s"></div>`;
+  }
+  container.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════
+   LUỒNG CHÍNH
+   ═══════════════════════════════════════════ */
+
+function begin(count){
+  state.needed = count;
+  state.picked = [];
+  state.locked = false;
+  state.deck = shuffle(buildDeck());
+
+  $('#spread-select').classList.add('hidden');
+  $('#deck-section').classList.remove('hidden');
+  $('#reset-wrap').classList.remove('hidden');
+  $('#reading').classList.add('hidden');
+  $('#reading-grid').innerHTML = '';
+  $('#reading-summary').innerHTML = '';
+
+  const deckEl = $('#deck');
+  deckEl.innerHTML = '';
+
+  const DISPLAY = 20;
+  for (let i = 0; i < DISPLAY; i++){
+    const card = state.deck[i];
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.style.animationDelay = (i * 0.035) + 's';
+    el.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face card-back"></div>
+        <div class="card-face card-front">
+          <div class="card-symbol">${card.symbol}</div>
+          <div class="card-name">${card.name}</div>
+        </div>
+      </div>`;
+    el.addEventListener('click', () => pickCard(el, i));
+    deckEl.appendChild(el);
+  }
+
+  updateHint();
+}
+
+function updateHint(){
+  const remaining = state.needed - state.picked.length;
+  const hint = $('#hint');
+  if (remaining <= 0){
+    hint.textContent = '✦ Đang hé lộ thông điệp... ✦';
+  } else {
+    hint.textContent = `Hãy chọn ${remaining} lá bài`;
+  }
+}
+
+function pickCard(el, idx){
+  if (state.locked) return;
+  if (state.picked.length >= state.needed) return;
+  if (el.classList.contains('picked')) return;
+
+  const card = state.deck[idx];
+  const reversed = Math.random() < 0.32;
+  const position = POSITIONS[state.needed][state.picked.length];
+
+  el.classList.add('picked');
+  if (reversed) el.querySelector('.card-front').classList.add('is-reversed');
+
+  const badge = document.createElement('div');
+  badge.className = 'badge';
+  badge.textContent = state.picked.length + 1;
+  el.appendChild(badge);
+
+  state.picked.push({ el, card, reversed, position });
+
+  updateHint();
+
+  if (state.picked.length === state.needed){
+    state.locked = true;
+    setTimeout(revealAll, 550);
+  }
+}
+
+function revealAll(){
+  state.picked.forEach((p, i) => {
+    setTimeout(() => p.el.classList.add('flipped'), i * 300);
+  });
+  setTimeout(showReading, state.picked.length * 300 + 500);
+}
+
+function showReading(){
+  const grid = $('#reading-grid');
+  grid.innerHTML = '';
+
+  state.picked.forEach((p, i) => {
+    const c = p.card;
+    const meaning = p.reversed ? c.reversed : c.upright;
+    const cardEl = document.createElement('div');
+    cardEl.className = 'reading-card';
+    cardEl.style.animationDelay = (i * 0.15) + 's';
+    cardEl.innerHTML = `
+      <div class="rc-position">${p.position}</div>
+      <div class="rc-symbol">${c.symbol}</div>
+      <div class="rc-name">${c.name}</div>
+      <div class="rc-en">${c.en}${p.reversed ? ' <span class="rev-tag">• Ngược</span>' : ''}</div>
+      <div class="rc-meaning">${meaning}</div>`;
+    grid.appendChild(cardEl);
+  });
+
+  $('#reading-summary').textContent =
+    'Hãy lắng nghe trực giác của bạn — đó là ngôn ngữ của vũ trụ.';
+
+  $('#reading').classList.remove('hidden');
+
+  setTimeout(() => {
+    $('#reading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 150);
+}
+
+function reset(){
+  $('#deck-section').classList.add('hidden');
+  $('#reading').classList.add('hidden');
+  $('#reset-wrap').classList.add('hidden');
+  $('#spread-select').classList.remove('hidden');
+  $('#deck').innerHTML = '';
+  $('#reading-grid').innerHTML = '';
+  $('#reading-summary').innerHTML = '';
+  state.picked = [];
+  state.locked = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════
+   KHỞI TẠO
+   ═══════════════════════════════════════════ */
+
+renderStars();
+$('#btn-1').addEventListener('click', () => begin(1));
+$('#btn-3').addEventListener('click', () => begin(3));
+$('#btn-reset').addEventListener('click', reset);
+</script>
+</body>
+</html>
