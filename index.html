@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mystic Tarot ✦ Khám Phá Vận Mệnh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold: #d4af37;
+  --gold-light: #fceea9;
+  --purple-deep: #050110;
+  --purple: #150826;
+  --purple-light: #2d1b4e;
+  --text: #e8e0f0;
+  --text-dim: #a99fc0;
+  --glass-bg: rgba(20, 8, 38, 0.7);
+  --glass-border: rgba(212, 175, 55, 0.3);
+}
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: radial-gradient(circle at 50% 0%, #2d1b4e 0%, #150826 40%, #050110 100%);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ═══════ PARTICLE CANVAS ═══════ */
+#particle-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ═══════ HEADER ═══════ */
+.header {
+  text-align: center; padding: 40px 20px 20px; position: relative; z-index: 2;
+  animation: fadeDown 1s ease-out;
+}
+.header-symbol {
+  font-size: 24px; color: var(--gold); letter-spacing: 15px; margin-bottom: 10px;
+  animation: glow 3s infinite;
+}
+h1 {
+  font-family: 'Cinzel', serif; font-size: clamp(28px, 7vw, 48px);
+  font-weight: 700; letter-spacing: 3px;
+  background: linear-gradient(180deg, #fff 0%, #fceea9 40%, #d4af37 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-transform: uppercase; margin-bottom: 10px;
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4));
+}
+.subtitle { color: var(--text-dim); font-size: 13px; letter-spacing: 2px; font-weight: 300; }
+
+/* ═══════ CONTAINER ═══════ */
+.container { max-width: 900px; margin: 0 auto; padding: 0 15px; position: relative; z-index: 2; }
+.hidden { display: none !important; }
+
+/* ═══════ RITUAL (START SCREEN) ═══════ */
+#start-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; text-align: center; animation: fadeIn 1.5s ease-out;
+}
+.magic-circle {
+  width: 150px; height: 150px; border-radius: 50%;
+  border: 2px dashed var(--gold); position: relative; margin-bottom: 30px;
+  animation: spin 20s linear infinite;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2), inset 0 0 30px rgba(212, 175, 55, 0.2);
+}
+.magic-circle::before {
+  content: '✦'; font-size: 50px; color: var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+}
+.btn-magic {
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05));
+  border: 1px solid var(--gold); color: var(--gold-light);
+  padding: 15px 40px; border-radius: 30px; font-family: 'Cinzel', serif;
+  font-size: 18px; letter-spacing: 2px; cursor: pointer;
+  transition: all 0.4s; box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+}
+.btn-magic:hover {
+  background: rgba(212, 175, 55, 0.3); box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* ═══════ SPREAD SELECT ═══════ */
+.spread-select h2 {
+  font-family: 'Cinzel', serif; text-align: center; font-size: 16px;
+  color: var(--text-dim); margin-bottom: 30px; letter-spacing: 3px;
+}
+.spread-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.spread-btn {
+  background: var(--glass-bg); backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border); border-radius: 16px;
+  padding: 25px 30px; color: var(--text); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 160px; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.spread-btn:hover {
+  transform: translateY(-5px); border-color: var(--gold);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+}
+.spread-icon { font-size: 30px; }
+.spread-title { font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold-light); }
+.spread-desc { font-size: 11px; color: var(--text-dim); text-align: center; }
+
+/* ═══════ DECK ═══════ */
+.deck-section { text-align: center; animation: fadeIn 0.8s; }
+.hint {
+  font-size: 15px; color: var(--gold-light); margin-bottom: 25px;
+  font-style: italic; text-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+.deck {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 10px; justify-items: center; padding: 10px; perspective: 1200px;
+}
+@media (min-width: 600px) { .deck { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 15px; } }
+
+/* ═══════ CARD ═══════ */
+.card {
+  width: 100%; aspect-ratio: 5/8; cursor: pointer; perspective: 1000px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+  animation: dealCard 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+  position: relative;
+}
+.card:hover:not(.picked) { transform: translateY(-15px) scale(1.05); z-index: 10; }
+.card.picked { pointer-events: none; transform: translateY(-10px) scale(1.02); }
+
+.card-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.6); border-radius: 8px;
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute; inset: 0; backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--gold);
+}
+
+/* Mặt sau */
+.card-back {
+  background: radial-gradient(circle at center, #2d1b4e, #0a0318);
+  display: flex; align-items: center; justify-content: center;
+}
+.card-back::after {
+  content: '✦'; color: var(--gold); font-size: 24px;
+  text-shadow: 0 0 15px var(--gold); animation: pulse 2s infinite;
+}
+
+/* Mặt trước */
+.card-front {
+  transform: rotateY(180deg); background: #000; position: relative;
+}
+.card-img {
+  width: 100%; height: 100%; object-fit: cover; opacity: 0.9;
+  transition: opacity 0.5s;
+}
+.card-img.loading { opacity: 0; }
+.card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 8px 4px;
+}
+.card-name-mini {
+  font-family: 'Cinzel', serif; font-size: 9px; color: var(--gold-light);
+  text-align: center; line-height: 1.2; text-shadow: 0 1px 3px #000;
+}
+
+.badge {
+  position: absolute; top: -8px; right: -8px; width: 26px; height: 26px;
+  border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
+  color: #000; font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 15px var(--gold); z-index: 5;
+  animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ═══════ READING ═══════ */
+.reading { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--glass-border); }
+.reading-grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .reading-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); } }
+
+.reading-card {
+  background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5); position: relative;
+  animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+.rc-header {
+  display: flex; align-items: center; gap: 15px; padding: 15px 20px;
+  background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent);
+  border-bottom: 1px solid rgba(212,175,55,0.1);
+}
+.rc-img {
+  width: 60px; height: 100px; border-radius: 6px; object-fit: cover;
+  border: 1px solid var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.3);
+}
+.rc-title-wrap { flex: 1; }
+.rc-position { font-size: 11px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
+.rc-name { font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold-light); line-height: 1.2; }
+.rc-status { font-size: 12px; color: #ff9b9b; font-style: italic; margin-top: 4px; }
+
+.rc-body { padding: 20px; }
+.rc-section { margin-bottom: 15px; }
+.rc-section:last-child { margin-bottom: 0; }
+.rc-label {
+  font-size: 12px; font-weight: 600; color: var(--gold-light);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.rc-text { font-size: 14px; line-height: 1.6; color: var(--text); }
+
+/* ═══════ UTILS ═══════ */
+.btn-reset-wrap { text-align: center; margin-top: 30px; }
+.btn-reset {
+  background: transparent; border: 1px solid var(--gold); color: var(--gold);
+  padding: 12px 35px; border-radius: 30px; font-size: 14px;
+  letter-spacing: 1px; cursor: pointer; transition: all 0.3s;
+}
+.btn-reset:hover { background: rgba(212, 175, 55, 0.1); box-shadow: 0 0 20px rgba(212,175,55,0.3); }
+
+/* ═══════ ANIMATIONS ═══════ */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dealCard { from { opacity: 0; transform: translateY(50px) rotate(10deg); } to { opacity: 1; transform: translateY(0) rotate(0); } }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes glow { 0%, 100% { text-shadow: 0 0 15px var(--gold); } 50% { text-shadow: 0 0 30px var(--gold), 0 0 50px rgba(212,175,55,0.5); } }
+
+/* Loader AI */
+.ai-loader {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.8); z-index: 2;
+}
+.ai-loader::after {
+  content: ''; width: 20px; height: 20px; border: 2px solid var(--gold);
+  border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;
+}
+</style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<header class="header">
+  <div class="header-symbol">✦ ✦ ✦</div>
+  <h1>Mystic Tarot</h1>
+  <p class="subtitle">Kết nối vũ trụ — Thấu hiểu bản thân</p>
+</header>
+
+<main class="container">
+
+  <!-- Màn hình bắt đầu (Ritual) -->
+  <section id="start-screen">
+    <div class="magic-circle"></div>
+    <p style="margin-bottom: 30px; font-style: italic; color: var(--text-dim)">Hít một hơi thật sâu, tĩnh tâm và nghĩ về câu hỏi của bạn...</p>
+    <button class="btn-magic" id="btn-enter">Bắt Đầu Trải Bài</button>
+  </section>
+
+  <!-- Chọn kiểu trải bài -->
+  <section id="spread-select" class="spread-select hidden">
+    <h2>Chọn Kiểu Trải Bài</h2>
+    <div class="spread-buttons">
+      <button class="spread-btn" data-count="1">
+        <span class="spread-icon">🌙</span>
+        <span class="spread-title">Một Lá</span>
+        <span class="spread-desc">Thông điệp dành cho bạn ngay lúc này</span>
+      </button>
+      <button class="spread-btn" data-count="3">
+        <span class="spread-icon">✨</span>
+        <span class="spread-title">Ba Lá</span>
+        <span class="spread-desc">Quá khứ · Hiện tại · Tương lai</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Bộ bài -->
+  <section id="deck-section" class="deck-section hidden">
+    <p class="hint" id="hint"></p>
+    <div class="deck" id="deck"></div>
+  </section>
+
+  <!-- Kết quả -->
+  <section id="reading" class="reading hidden">
+    <div class="reading-grid" id="reading-grid"></div>
+    <div class="btn-reset-wrap" id="reset-wrap">
+      <button class="btn-reset" id="btn-reset">↺ Trải bài mới</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════
+   1. HIỆU ỨNG HẠT SÁNG (MAGIC PARTICLES)
+   ═══════════════════════════════════════════ */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = Math.random() * 0.5 - 0.25;
+    this.speedY = Math.random() * 0.5 - 0.25;
+    this.opacity = Math.random() * 0.5 + 0.1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x > canvas.width) this.x = 0;
+    if (this.x < 0) this.x = canvas.width;
+    if (this.y > canvas.height) this.y = 0;
+    if (this.y < 0) this.y = canvas.height;
+  }
+  draw() {
+    ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* ═══════════════════════════════════════════
+   2. DỮ LIỆU BÀI TAROT (CHI TIẾT)
+   ═══════════════════════════════════════════ */
+const MAJOR = [
+  {name:"The Fool", vn:"Chàng Khờ", img:"0", up:"Khởi đầu mới, sự hồn nhiên, niềm tin vào tương lai.", down:"Sự liều lĩnh, thiếu suy nghĩ, sợ hãi bước ra vùng an toàn.", love:"Một mối quan hệ mới mẻ, đầy bất ngờ. Hãy cởi mở.", career:"Cơ hội nghề nghiệp mới, đừng ngại thử thách.", advice:"Hãy bước đi với niềm tin, vũ trụ sẽ nâng đỡ bạn."},
+  {name:"The Magician", vn:"Nhà Ảo Thuật", img:"1", up:"Sức mạnh, khả năng hiện thực hóa, sự sáng tạo.", down:"Thao túng, lừa dối, tài năng chưa được khai phá.", love:"Bạn có đủ sức hút để chinh phục đối phương.", career:"Thời điểm vàng để khởi nghiệp hoặc thăng tiến.", advice:"Bạn có mọi công cụ trong tay, hãy hành động!"},
+  {name:"The High Priestess", vn:"Nữ Tư Tế", img:"2", up:"Trực giác, bí ẩn, tri thức tiềm ẩn.", down:"Mất kết nối với bản thân, bỏ qua trực giác.", love:"Cần thấu hiểu đối phương ở tầng sâu hơn.", career:"Hãy tin vào linh cảm của bạn trong công việc.", advice:"Lắng nghe tiếng nói bên trong, câu trả lời ở đó."},
+  {name:"The Empress", vn:"Hoàng Hậu", img:"3", up:"Sinh sôi, nuôi dưỡng, vẻ đẹp và sự sung mãn.", down:"Thiếu chăm sóc bản thân, sự phụ thuộc.", love:"Tình yêu ngọt ngào, tràn đầy sự chăm sóc.", career:"Môi trường làm việc thoải mái, sáng tạo.", advice:"Hãy yêu thương bản thân trước khi yêu người khác."},
+  {name:"The Emperor", vn:"Hoàng Đế", img:"4", up:"Quyền lực, ổn định, kỷ luật và sự lãnh đạo.", down:"Độc đoán, cứng nhắc, lạm dụng quyền lực.", love:"Mối quan hệ cần sự cam kết và tôn trọng.", career:"Sự thăng tiến nhờ khả năng quản lý tốt.", advice:"Hãy thiết lập ranh giới và nguyên tắc rõ ràng."},
+  {name:"The Hierophant", vn:"Giáo Hoàng", img:"5", up:"Truyền thống, niềm tin, sự hướng dẫn tâm linh.", down:"Nổi loạn, phá vỡ quy tắc, nghi ngờ niềm tin.", love:"Một mối quan hệ nghiêm túc, hướng đến hôn nhân.", career:"Học hỏi từ những người đi trước.", advice:"Đôi khi truyền thống mang lại sự an toàn."},
+  {name:"The Lovers", vn:"Tình Nhân", img:"6", up:"Tình yêu, hòa hợp, lựa chọn của trái tim.", down:"Bất hòa, lựa chọn sai lầm, mất cân bằng.", love:"Tình cảm thăng hoa, sự kết nối mạnh mẽ.", career:"Cần đưa ra lựa chọn quan trọng giữa 2 con đường.", advice:"Hãy lắng nghe trái tim nhưng đừng bỏ qua lý trí."},
+  {name:"The Chariot", vn:"Cỗ Xe", img:"7", up:"Ý chí, quyết tâm, chiến thắng nhờ kiểm soát.", down:"Mất phương hướng, thiếu kiểm soát.", love:"Cần nỗ lực để vượt qua thử thách trong tình cảm.", career:"Thành công đến với người kiên định.", advice:"Tập trung và tiến về phía trước, đừng bỏ cuộc."},
+  {name:"Strength", vn:"Sức Mạnh", img:"8", up:"Sức mạnh nội tâm, lòng can đảm, kiên nhẫn.", down:"Yếu đuối, thiếu tự tin, cảm xúc lấn át.", love:"Tình yêu cần sự bao dung và thấu hiểu.", career:"Vượt qua nỗi sợ để đạt được mục tiêu.", advice:"Sức mạnh thực sự đến từ sự bình tĩnh và lòng trắc ẩn."},
+  {name:"The Hermit", vn:"Ẩn Sĩ", img:"9", up:"Chiêm nghiệm, tìm kiếm chân lý bên trong.", down:"Cô lập, cô đơn, trốn tránh thực tại.", love:"Cần thời gian một mình để hiểu mình muốn gì.", career:"Thời gian tốt để học hỏi và trau dồi kỹ năng.", advice:"Hãy tạm rời xa ồn ào để lắng nghe chính mình."},
+  {name:"Wheel of Fortune", vn:"Bánh Xe Số Phận", img:"10", up:"Vận may, chu kỳ mới, sự thay đổi tích cực.", down:"Vận rủi, chống lại sự thay đổi.", love:"Một cuộc gặp gỡ định mệnh có thể xảy ra.", career:"Cơ hội bất ngờ xuất hiện, hãy nắm bắt.", advice:"Mọi thứ đều có chu kỳ, hãy kiên nhẫn chờ đợi."},
+  {name:"Justice", vn:"Công Lý", img:"11", up:"Công bằng, sự thật, nhân quả.", down:"Bất công, thiên vị, trốn tránh trách nhiệm.", love:"Mối quan hệ cần sự công bằng và minh bạch.", career:"Kết quả xứng đáng với nỗ lực bạn bỏ ra.", advice:"Hãy hành động công bằng và trung thực."},
+  {name:"The Hanged Man", vn:"Người Treo Ngược", img:"12", up:"Buông bỏ, thay đổi góc nhìn, hy sinh.", down:"Trì hoãn, hy sinh vô ích, bám víu.", love:"Cần nhìn nhận vấn đề từ góc độ của đối phương.", career:"Đôi khi lùi một bước lại là tiến hai bước.", advice:"Hãy học cách chấp nhận và buông bỏ những gì không thuộc về bạn."},
+  {name:"Death", vn:"Tử Thần", img:"13", up:"Kết thúc để mở ra khởi đầu mới, chuyển hóa.", down:"Sợ hãi thay đổi, bám víu quá khứ.", love:"Một giai đoạn kết thúc, mở ra chương mới.", career:"Cần chuyển đổi công việc hoặc hướng đi.", advice:"Đừng sợ kết thúc, đó là khởi đầu của sự tái sinh."},
+  {name:"Temperance", vn:"Tiết Độ", img:"14", up:"Cân bằng, hài hòa, kiên nhẫn.", down:"Mất cân bằng, thái quá, thiếu kiên nhẫn.", love:"Mối quan hệ hài hòa, hai người bù trừ cho nhau.", career:"Làm việc nhóm hiệu quả nhờ sự điều hòa.", advice:"Tìm kiếm sự cân bằng giữa các khía cạnh cuộc sống."},
+  {name:"The Devil", vn:"Ác Quỷ", img:"15", up:"Cám dỗ, ràng buộc, nỗi sợ vô hình.", down:"Giải phóng khỏi ràng buộc, nhận ra sức mạnh.", love:"Mối quan hệ độc hại, sự chiếm hữu.", career:"Bị cám dỗ bởi lợi ích vật chất không chính đáng.", advice:"Hãy nhận diện những xiềng xích đang trói buộc bạn."},
+  {name:"The Tower", vn:"Tòa Tháp", img:"16", up:"Biến cố đột ngột, sụp đổ để xây dựng lại.", down:"Né tránh thảm họa, sợ hãi thay đổi.", love:"Xung đột lớn có thể xảy ra, cần bình tĩnh.", career:"Khủng hoảng tạm thời, cần xây dựng lại từ đầu.", advice:"Đôi khi cần phá vỡ để xây dựng nền móng vững chắc hơn."},
+  {name:"The Star", vn:"Ngôi Sao", img:"17", up:"Hy vọng, chữa lành, cảm hứng.", down:"Mất hy vọng, thiếu niềm tin.", love:"Tình yêu trong sáng, chữa lành vết thương cũ.", career:"Tương lai tươi sáng, hãy tiếp tục cố gắng.", advice:"Hãy giữ vững niềm tin vào những điều tốt đẹp."},
+  {name:"The Moon", vn:"Mặt Trăng", img:"18", up:"Ảo ảnh, nỗi sợ vô thức, trực giác mạnh.", down:"Sự thật hé lộ, nỗi sợ tan biến.", love:"Có thể có sự hiểu lầm hoặc che giấu.", career:"Cẩn thận với những lời hứa hẹn không rõ ràng.", advice:"Hãy tin vào trực giác, đừng để nỗi sợ đánh lừa."},
+  {name:"The Sun", vn:"Mặt Trời", img:"19", up:"Niềm vui, thành công, năng lượng tích cực.", down:"Thiếu tự tin, thành công bị che khuất tạm thời.", love:"Hạnh phúc viên mãn, tràn đầy tiếng cười.", career:"Thành công rực rỡ, được công nhận.", advice:"Hãy tỏa sáng và tận hưởng niềm vui cuộc sống."},
+  {name:"Judgement", vn:"Phán Xét", img:"20", up:"Thức tỉnh, tha thứ, tái sinh.", down:"Tự trách móc, bỏ lỡ cơ hội thức tỉnh.", love:"Cơ hội quay lại hoặc làm mới mối quan hệ.", career:"Đánh giá lại con đường sự nghiệp.", advice:"Hãy tha thứ cho bản thân và hướng về tương lai."},
+  {name:"The World", vn:"Thế Giới", img:"21", up:"Hoàn thành, thành tựu, sự viên mãn.", down:"Thiếu kết thúc, cảm giác dang dở.", love:"Mối quan hệ đạt đến sự viên mãn.", career:"Mục tiêu lớn đã hoàn thành.", advice:"Hãy ăn mừng thành quả của bạn và chuẩn bị cho hành trình mới."}
+];
+
+const SUITS = [
+  {en:"Wands", vn:"Gậy", sym:"🔥"},
+  {en:"Cups", vn:"Cốc", sym:"💧"},
+  {en:"Swords", vn:"Kiếm", sym:"⚔️"},
+  {en:"Pentacles", vn:"Đồng Xu", sym:"🪙"}
+];
+
+const RANKS = [
+  {en:"Ace", vn:"Át"}, {en:"Two", vn:"Hai"}, {en:"Three", vn:"Ba"},
+  {en:"Four", vn:"Bốn"}, {en:"Five", vn:"Năm"}, {en:"Six", vn:"Sáu"},
+  {en:"Seven", vn:"Bảy"}, {en:"Eight", vn:"Tám"}, {en:"Nine", vn:"Chín"},
+  {en:"Ten", vn:"Mười"}, {en:"Page", vn:"Tiểu Đồng"}, {en:"Knight", vn:"Kỵ Sĩ"},
+  {en:"Queen", vn:"Nữ Hoàng"}, {en:"King", vn:"Vua"}
+];
+
+// Tạo dữ liệu cho 56 lá bộ ẩn phụ
+function buildMinorArcana() {
+  let minor = [];
+  SUITS.forEach(suit => {
+    RANKS.forEach((rank, index) => {
+      minor.push({
+        name: `${rank.en} of ${suit.en}`,
+        vn: `${rank.vn} ${suit.vn}`,
+        img: `${suit.en}_${rank.en}`,
+        up: `Năng lượng của ${suit.vn} kết hợp ${rank.vn}: Sự phát triển và cơ hội mới.`,
+        down: `Năng lượng bị tắc nghẽn hoặc tiêu cực từ ${suit.vn}.`,
+        love: `Tình cảm chịu ảnh hưởng bởi năng lượng ${suit.vn}.`,
+        career: `Công việc có sự thay đổi liên quan đến ${suit.vn}.`,
+        advice: `Hãy chú ý đến khía cạnh ${suit.vn} trong cuộc sống của bạn.`
+      });
+    });
+  });
+  return minor;
+}
+
+const FULL_DECK = [...MAJOR, ...buildMinorArcana()];
+
+// Hàm tạo Prompt cho AI vẽ ảnh Tarot
+function getAIImage(card) {
+  // Sử dụng Pollinations.ai để tạo ảnh Tarot phong cách huyền bí
+  const basePrompt = `mystical tarot card illustration, ${card.name}, ornate, ethereal, glowing gold, dark purple background, highly detailed, masterpiece, 8k`;
+  const encoded = encodeURIComponent(basePrompt);
+  const seed = Math.floor(Math.random() * 1000);
+  return `https://image.pollinations.ai/prompt/${encoded}?width=400&height=640&nologo=true&seed=${seed}`;
+}
+
+/* ═══════════════════════════════════════════
+   3. LOGIC GAME
+   ═══════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+const state = { needed: 0, deck: [], picked: [], locked: false };
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Nút bắt đầu
+$('#btn-enter').addEventListener('click', () => {
+  $('#start-screen').classList.add('hidden');
+  $('#spread-select').classList.remove('hidden');
+});
+
+// Chọn kiểu trải bài
+document.querySelectorAll('.spread-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const count = parseInt(e.currentTarget.getAttribute('data-count'));
+    startReading(count);
+  });
+});
+
+function startReading(count) {
+  state.needed = count;
+  state.picked = [];
+  state.locked = false;
+  state.deck = shuffle(FULL_DECK);
+
+  $('#spread-select').classList.add('hidden');
+  $('#deck-section').classList.remove('hidden');
+  $('#reading').classList.add('hidden');
+  $('#reading-grid').innerHTML = '';
+
+  const deckEl = $('#deck');
+  deckEl.innerHTML = '';
+
+  // Chỉ hiển thị 21 lá để chọn (cho gọn màn hình)
+  for (let i = 0; i < 21; i++) {
+    const card = state.deck[i];
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.style.animationDelay = `${i * 0.03}s`;
+    el.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face card-back"></div>
+        <div class="card-face card-front">
+          <div class="ai-loader"></div>
+          <img src="" class="card-img loading" alt="${card.vn}">
+          <div class="card-overlay">
+            <div class="card-name-mini">${card.vn}</div>
+          </div>
+        </div>
+      </div>`;
+    el.addEventListener('click', () => pickCard(el, card));
+    deckEl.appendChild(el);
+  }
+  updateHint();
+}
+
+function updateHint() {
+  const remaining = state.needed - state.picked.length;
+  $('#hint').textContent = remaining > 0 ? `Hãy chọn ${remaining} lá bài...` : '✦ Đang kết nối vũ trụ... ✦';
+}
+
+function pickCard(el, card) {
+  if (state.locked || state.picked.length >= state.needed) return;
+  
+  // Tải ảnh AI ngay khi click
+  const imgEl = el.querySelector('.card-img');
+  const loader = el.querySelector('.ai-loader');
+  imgEl.src = getAIImage(card);
+  imgEl.onload = () => {
+    imgEl.classList.remove('loading');
+    loader.style.display = 'none';
+  };
+
+  // Xác suất 30% lá bài bị ngược
+  const isReversed = Math.random() < 0.3; 
+  const position = state.needed === 1 ? 'Thông điệp' : ['Quá khứ', 'Hiện tại', 'Tương lai'][state.picked.length];
+
+  el.classList.add('picked');
+  
+  const badge = document.createElement('div');
+  badge.className = 'badge';
+  badge.textContent = state.picked.length + 1;
+  el.appendChild(badge);
+
+  state.picked.push({ card, isReversed, position });
+
+  updateHint();
+
+  if (state.picked.length === state.needed) {
+    state.locked = true;
+    setTimeout(revealAll, 600);
+  }
+}
+
+function revealAll() {
+  const pickedElements = document.querySelectorAll('.card.picked');
+  pickedElements.forEach((el, i) => {
+    setTimeout(() => el.classList.add('flipped'), i * 400);
+  });
+  setTimeout(showReading, state.picked.length * 400 + 800);
+}
+
+function showReading() {
+  const grid = $('#reading-grid');
+  grid.innerHTML = '';
+
+  state.picked.forEach((p, i) => {
+    const c = p.card;
+    const meaning = p.isReversed ? c.down : c.up;
+    
+    const html = `
+      <div class="reading-card" style="animation-delay: ${i * 0.2}s">
+        <div class="rc-header">
+          <img src="${getAIImage(c)}" class="rc-img" alt="${c.vn}">
+          <div class="rc-title-wrap">
+            <div class="rc-position">${p.position}</div>
+            <div class="rc-name">${c.vn}</div>
+            <div class="rc-status">${p.isReversed ? '↺ Lá bài ngược (Reversed)' : '↑ Lá bài xuôi (Upright)'}</div>
+          </div>
+        </div>
+        <div class="rc-body">
+          <div class="rc-section">
+            <div class="rc-label">📖 Ý nghĩa chung</div>
+            <div class="rc-text">${meaning}</div>
+          </div>
+          <div class="rc-section">
+            <div class="rc-label">💖 Tình cảm</div>
+            <div class="rc-text">${c.love}</div>
+          </div>
+          <div class="rc-section">
+            <div class="rc-label">💼 Sự nghiệp</div>
+            <div class="rc-text">${c.career}</div>
+          </div>
+          <div class="rc-section">
+            <div class="rc-label">✨ Lời khuyên</div>
+            <div class="rc-text" style="color: var(--gold-light); font-style: italic;">${c.advice}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.insertAdjacentHTML('beforeend', html);
+  });
+
+  $('#reading').classList.remove('hidden');
+  setTimeout(() => {
+    $('#reading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+// Reset
+$('#btn-reset').addEventListener('click', () => {
+  $('#deck-section').classList.add('hidden');
+  $('#reading').classList.add('hidden');
+  $('#spread-select').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
