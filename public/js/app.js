@@ -13,6 +13,11 @@ let voiceUrl = null;
 let deckFilter = 'all';
 let imageMap = new Map();
 let isShuffling = false;
+let modalCard = null;
+const STORE = { profile: 'oreo.profile.v1', journal: 'oreo.journal.v1', history: 'oreo.history.v1', favorites: 'oreo.favorites.v1' };
+const readStore = (key, fallback = []) => { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } };
+const writeStore = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch { toast('Không thể lưu dữ liệu trên thiết bị này.'); } };
+const safeText = (value) => String(value ?? '').replace(/[&<>\"']/g, ch => { if (ch === '&') return '&amp;'; if (ch === '<') return '&lt;'; if (ch === '>') return '&gt;'; if (ch === '\"') return '&quot;'; return '&#39;'; });
 
 const toast = (message) => {
   const el = $('#toast');
@@ -464,6 +469,10 @@ async function analyzeReading() {
     if (!currentAnalysis) throw new Error('AI trả về nội dung trống.');
 
     $('#analysisContent').innerHTML = formatMarkdown(currentAnalysis);
+    const savedHistory = readStore(STORE.history);
+    savedHistory.unshift({ id: Date.now(), date: new Date().toLocaleString('vi-VN'), question: $('#question')?.value || '', topic: $('#topic')?.value || 'Tổng quan', cards: selected.map(c => ({ vi:c.vi, name:c.name, reversed:c.reversed, position:c.position })), analysis: currentAnalysis });
+    writeStore(STORE.history, savedHistory.slice(0, 50));
+    renderPersonalSpace();
     $('#analysis')?.classList.remove('hidden');
 
     $('#analysis')?.scrollIntoView({
@@ -545,12 +554,74 @@ function stopVoice() {
 
 /* MENU, BỘ LỌC, NHẠC */
 
+
+function renderPersonalSpace() {
+  const profile = readStore(STORE.profile, {});
+  if ($('#profileName')) $('#profileName').value = profile.name || '';
+  if ($('#profileBirthday')) $('#profileBirthday').value = profile.birthday || '';
+  if ($('#profileZodiac')) $('#profileZodiac').value = profile.zodiac || '';
+  const history = readStore(STORE.history);
+  const journals = readStore(STORE.journal);
+  const favorites = readStore(STORE.favorites);
+  if ($('#historyList')) $('#historyList').innerHTML = history.length ? history.map(item => `<article class="saved-item"><small>${safeText(item.date)}</small><strong>${safeText(item.question)}</strong><p>${item.cards.map(c => safeText(c.vi) + (c.reversed ? ' · Đảo ngược' : '')).join(' / ')}</p><button type="button" data-history="${item.id}" class="text-link">Xem lại & chia sẻ</button></article>`).join('') : '<p class="space-empty">Chưa có trải bài nào được lưu.</p>';
+  if ($('#journalList')) $('#journalList').innerHTML = journals.length ? journals.map(item => `<article class="saved-item"><small>${safeText(item.date)}</small><p>${safeText(item.text)}</p></article>`).join('') : '<p class="space-empty">Nhật ký của bạn đang chờ dòng đầu tiên.</p>';
+  if ($('#favoriteList')) $('#favoriteList').innerHTML = favorites.length ? favorites.map(c => `<button type="button" class="favorite-chip" data-favorite="${safeText(c.id)}">${safeText(c.vi)} · ${safeText(c.name)}</button>`).join('') : '<p class="space-empty">Chưa có lá bài yêu thích.</p>';
+  $('#historyList')?.querySelectorAll('[data-history]').forEach(btn => btn.addEventListener('click', () => {
+    const item = readStore(STORE.history).find(x => String(x.id) === btn.dataset.history);
+    if (!item) return;
+    currentAnalysis = item.analysis;
+    $('#analysisContent').innerHTML = formatMarkdown(item.analysis);
+    $('#analysis')?.classList.remove('hidden');
+    $('#analysis')?.scrollIntoView({behavior:'smooth'});
+  }));
+  $('#favoriteList')?.querySelectorAll('[data-favorite]').forEach(btn => btn.addEventListener('click', () => {
+    const card = deck.find(c => c.id === btn.dataset.favorite); if (card) openCard(card);
+  }));
+}
+function saveProfile() {
+  writeStore(STORE.profile, { name: $('#profileName')?.value.trim() || '', birthday: $('#profileBirthday')?.value || '', zodiac: $('#profileZodiac')?.value.trim() || '' });
+  toast('Đã lưu hồ sơ trên thiết bị này.');
+}
+function saveJournal() {
+  const text = $('#journalEntry')?.value.trim(); if (!text) return toast('Bạn hãy viết vài dòng trước nhé.');
+  const items = readStore(STORE.journal); items.unshift({date:new Date().toLocaleString('vi-VN'), text});
+  writeStore(STORE.journal, items.slice(0,100)); $('#journalEntry').value=''; renderPersonalSpace(); toast('Đã lưu vào nhật ký.');
+}
+function toggleFavorite() {
+  if (!modalCard) return;
+  const items = readStore(STORE.favorites); const exists = items.some(c => c.id === modalCard.id);
+  writeStore(STORE.favorites, exists ? items.filter(c => c.id !== modalCard.id) : [...items, {id:modalCard.id, vi:modalCard.vi, name:modalCard.name}]);
+  renderPersonalSpace(); openCard(modalCard);
+}
+async function shareReading() {
+  if (!currentAnalysis) return toast('Chưa có nội dung để chia sẻ.');
+  const payload = `Oreo Tarot Mystic · Luna\\nCâu hỏi: ${$('#question')?.value || 'Trải bài Tarot'}\\n\\n${currentAnalysis}`;
+  try {
+    if (navigator.share) await navigator.share({title:'Oreo Tarot Mystic · Luna', text:payload});
+    else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(payload); toast('Đã sao chép nội dung để chia sẻ.'); }
+    else toast('Trình duyệt không hỗ trợ chia sẻ trực tiếp.');
+  } catch (err) { if (err.name !== 'AbortError') toast('Chưa thể chia sẻ trên thiết bị này.'); }
+}
+function applyCustomSpread() {
+  const value = Number($('#customCount')?.value);
+  if (!Number.isInteger(value) || value < 1 || value > 10) return toast('Số lá phải từ 1 đến 10.');
+  count = value; selected = []; selectedIds = new Set();
+  $$('.spread-option').forEach(item => item.classList.remove('active'));
+  $('#drawStage')?.classList.add('hidden'); $('#analysis')?.classList.add('hidden');
+  toast(`Đã chọn trải bài ${count} lá.`);
+}
+
 function setupEvents() {
   $('#draw')?.addEventListener('click', drawCards);
   $('#redraw')?.addEventListener('click', drawCards);
   $('#analyze')?.addEventListener('click', analyzeReading);
   $('#speak')?.addEventListener('click', speak);
   $('#stopSpeak')?.addEventListener('click', stopVoice);
+  $('#toggleFavorite')?.addEventListener('click', toggleFavorite);
+  $('#saveProfile')?.addEventListener('click', saveProfile);
+  $('#saveJournal')?.addEventListener('click', saveJournal);
+  $('#shareReading')?.addEventListener('click', shareReading);
+  $('#applyCustomSpread')?.addEventListener('click', applyCustomSpread);
   $('#deckSearch')?.addEventListener('input', renderDeck);
 
   $('#modalClose')?.addEventListener('click', closeCard);
