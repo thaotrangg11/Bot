@@ -1972,3 +1972,27 @@ img {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* OREO TAROT MYSTIC · PERSONAL SANCTUARY */
+.nav-tools{display:flex;align-items:center;gap:14px}
+.custom-spread{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.custom-spread label{margin:0;font-size:9px;letter-spacing:.08em;color:var(--muted)}
+.custom-spread input,.space-card input,.space-card textarea{background:#0c0712;border:1px solid #a67bc34a;color:var(--ink);padding:12px 14px;border-radius:4px;outline:none;min-width:0}
+.custom-spread input{width:76px}
+.custom-spread input:focus,.space-card input:focus,.space-card textarea:focus{border-color:var(--gold)}
+.my-space{padding:100px 0;border-top:1px solid var(--line)}
+.space-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.space-card{padding:28px;border:1px solid var(--line);background:linear-gradient(145deg,#1b1029aa,#100a19cc);display:flex;flex-direction:column;align-items:stretch;gap:11px}
+.space-card h3{font:500 30px var(--serif);margin:0 0 8px;color:var(--gold)}
+.space-card label{font-size:9px;letter-spacing:.16em;color:var(--muted)}
+.space-card textarea{resize:vertical;line-height:1.7}
+.space-card .button{align-self:flex-start;margin-top:5px}
+.saved-list{display:grid;gap:10px;max-height:330px;overflow:auto}
+.saved-item{padding:13px;border:1px solid var(--line);background:#09061088}
+.saved-item small,.space-empty{color:#9b8ba6;font-size:10px}
+.saved-item strong{display:block;margin:7px 0;font-size:12px}
+.saved-item p{font-size:11px;line-height:1.65;color:#c6b8d0;white-space:pre-wrap;margin:5px 0}
+.favorite-chip{border:1px solid #b9935b66;background:#120b1d;color:var(--gold);padding:10px;text-align:left;cursor:pointer}
+#toggleFavorite{margin-top:12px}
+@media(max-width:700px){.space-grid{grid-template-columns:1fr}.my-space{padding:70px 0}.custom-spread{align-items:flex-start}.custom-spread label{width:100%}.nav-tools{display:none}}
