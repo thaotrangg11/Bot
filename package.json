@@ -1,9 +1,9 @@
 {
-  "name": "mystic-tarot-ai",
-  "version": "1.0.0",
+  "name": "oreo-tarot-mystic",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "Mystic Tarot AI - Celestial Tarot Experience",
+  "description": "Oreo Tarot Mystic — premium Tarot experience with Luna AI",
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js"
