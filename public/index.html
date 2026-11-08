@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#090510"><meta name="description" content="Mystic Tarot — hành trình chiêm nghiệm cùng Luna và trí tuệ AI.">
-  <title>Mystic Tarot — The Celestial Reading</title>
+  <meta name="theme-color" content="#090510"><meta name="description" content="Oreo Tarot Mystic — hành trình chiêm nghiệm cùng Luna và trí tuệ AI.">
+  <title>Oreo Tarot Mystic — The Celestial Reading</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -11,9 +11,9 @@
 <body>
   <div class="grain"></div><div class="aurora aurora-a"></div><div class="aurora aurora-b"></div>
   <header class="nav wrap">
-    <a class="brand" href="#home"><span class="brand-mark">✧</span><span>MYSTIC <i>TAROT</i><small>THE CELESTIAL READING</small></span></a>
-    <nav><a href="#experience">Trải bài</a><a href="#deck">Bộ bài</a><a href="#luna">Gặp Luna</a></nav>
-    <a class="nav-cta" href="#experience">Bắt đầu <span>↗</span></a>
+    <a class="brand" href="#home"><span class="brand-mark">✧</span><span>OREO <i>TAROT MYSTIC</i><small>LUNA · THE CELESTIAL READING</small></span></a>
+    <nav><a href="#experience">Trải bài</a><a href="#deck">Bộ bài</a><a href="#my-space">Không gian của tôi</a><a href="#luna">Gặp Luna</a></nav>
+    <div class="nav-tools"><a class="nav-cta" href="#experience">Bắt đầu <span>↗</span></a></div>
     <button class="menu-toggle" aria-label="Mở menu">☰</button>
   </header>
   <main>
@@ -46,21 +46,30 @@
         <div class="reading-form">
           <label for="question">ĐIỀU BẠN MUỐN LẮNG NGHE</label>
           <textarea id="question" maxlength="700" placeholder="Ví dụ: Con đường công việc và tình cảm của mình trong thời gian tới sẽ như thế nào?" rows="3"></textarea>
-          <div class="form-row"><div class="field"><label for="topic">CHỦ ĐỀ</label><select id="topic"><option>Tổng quan</option><option>Tình yêu & các mối quan hệ</option><option>Công việc & sự nghiệp</option><option>Tài chính</option><option>Phát triển bản thân</option></select></div><div class="field"><label>TRẢI BÀI</label><div class="spread-options"><button class="spread-option active" data-count="3">03 <small>lá</small></button><button class="spread-option" data-count="5">05 <small>lá</small></button><button class="spread-option" data-count="7">07 <small>lá</small></button><button class="spread-option" data-count="10">10 <small>lá</small></button></div></div></div>
+          <div class="form-row"><div class="field"><label for="topic">CHỦ ĐỀ</label><select id="topic"><option>Tổng quan</option><option>Tình yêu & các mối quan hệ</option><option>Công việc & sự nghiệp</option><option>Tài chính</option><option>Phát triển bản thân</option></select></div><div class="field"><label>TRẢI BÀI TÙY CHỈNH</label><div class="spread-options"><button class="spread-option active" data-count="3">03 <small>lá</small></button><button class="spread-option" data-count="5">05 <small>lá</small></button><button class="spread-option" data-count="7">07 <small>lá</small></button><button class="spread-option" data-count="10">10 <small>lá</small></button></div><div class="custom-spread"><label for="customCount">Số lá tùy chọn (1–10)</label><input id="customCount" type="number" min="1" max="10" value="3"><button type="button" class="button button-ghost" id="applyCustomSpread">Áp dụng</button></div></div></div>
           <button class="button button-primary draw-button" id="draw">Xào bài & rút bài <span>✦</span></button>
           <p class="form-hint">✧ Hãy chọn câu hỏi thật lòng. Mỗi trải bài là một góc nhìn để bạn chiêm nghiệm.</p>
         </div>
         <div class="draw-stage hidden" id="drawStage"><div class="stage-heading"><span class="section-kicker">THE CARDS ARE SPEAKING</span><h3>Những thông điệp dành cho bạn</h3><p id="drawSub">Luna đang kết nối những biểu tượng...</p></div><div class="drawn-cards" id="drawnCards"></div><div class="reading-actions"><button class="button button-primary" id="analyze">Luna luận giải trải bài <span>✧</span></button><button class="button button-ghost" id="redraw">Rút lại bài</button></div></div>
-        <div class="analysis hidden" id="analysis"><div class="analysis-title"><div class="luna-avatar">☾</div><div><span class="section-kicker">LUNA'S INTERPRETATION</span><h3>Lời thì thầm từ những lá bài</h3></div></div><div class="analysis-content" id="analysisContent"></div><div class="voice-controls"><button class="button button-primary" id="speak">▶ &nbsp; Nghe Luna đọc</button><button class="button button-ghost" id="stopSpeak">Dừng đọc</button><span id="voiceStatus">Giọng đọc AI · Cần cấu hình ElevenLabs</span></div></div>
+        <div class="analysis hidden" id="analysis"><div class="analysis-title"><div class="luna-avatar">☾</div><div><span class="section-kicker">LUNA'S INTERPRETATION</span><h3>Lời thì thầm từ những lá bài</h3></div></div><div class="analysis-content" id="analysisContent"></div><div class="voice-controls"><button class="button button-primary" id="speak">▶ &nbsp; Nghe Luna đọc</button><button class="button button-ghost" id="stopSpeak">Dừng đọc</button><span id="voiceStatus">Giọng đọc AI · Cần cấu hình ElevenLabs</span><button class="button button-ghost" id="shareReading" type="button">Chia sẻ kết quả</button></div></div>
       </div>
     </div></section>
 
     <section class="deck-section wrap" id="deck"><div class="section-head"><div><div class="section-kicker">THE COMPLETE COLLECTION</div><h2>78 cánh cửa<br><em>của sự thấu hiểu.</em></h2></div><p>Mỗi lá bài mang một biểu tượng, một câu chuyện và một lời mời nhìn sâu hơn vào thế giới bên trong bạn.</p></div><div class="deck-toolbar"><div class="deck-tabs"><button class="deck-tab active" data-filter="all">Tất cả · 78</button><button class="deck-tab" data-filter="major">Major Arcana · 22</button><button class="deck-tab" data-filter="minor">Minor Arcana · 56</button></div><div class="deck-search"><span>⌕</span><input id="deckSearch" placeholder="Tìm lá bài..."></div></div><div class="deck-grid" id="deckGrid"></div><div class="deck-footer"><span>THE RIDER–WAITE–SMITH COLLECTION</span><span>ILLUSTRATIONS · PUBLIC DOMAIN · 1909</span></div></section>
 
+    <section class="my-space wrap" id="my-space">
+      <div class="section-head"><div><div class="section-kicker">YOUR PRIVATE SANCTUARY</div><h2>Không gian <em>của bạn.</em></h2></div><p>Lưu lại hành trình chiêm nghiệm trên thiết bị này. Dữ liệu hiện được lưu cục bộ trong trình duyệt.</p></div>
+      <div class="space-grid">
+        <div class="space-card"><h3>Hồ sơ cá nhân</h3><label for="profileName">Biệt danh</label><input id="profileName" maxlength="40" placeholder="Tên bạn muốn Luna gọi"><label for="profileBirthday">Ngày sinh</label><input id="profileBirthday" type="date"><label for="profileZodiac">Cung hoàng đạo</label><input id="profileZodiac" maxlength="30" placeholder="Ví dụ: Song Ngư"><button class="button button-primary" id="saveProfile">Lưu hồ sơ</button></div>
+        <div class="space-card"><h3>Nhật ký Tarot</h3><textarea id="journalEntry" rows="5" maxlength="4000" placeholder="Viết lại cảm xúc, suy ngẫm hoặc điều bạn muốn ghi nhớ..."></textarea><button class="button button-primary" id="saveJournal">Lưu vào nhật ký</button><div id="journalList" class="saved-list"></div></div>
+        <div class="space-card"><h3>Lịch sử trải bài</h3><div id="historyList" class="saved-list"><p class="space-empty">Chưa có trải bài nào được lưu.</p></div></div>
+        <div class="space-card"><h3>Lá bài yêu thích</h3><div id="favoriteList" class="saved-list"><p class="space-empty">Mở một lá bài trong thư viện và thêm vào yêu thích.</p></div></div>
+      </div>
+    </section>
     <section class="luna-section" id="luna"><div class="wrap luna-wrap"><div class="luna-art"><div class="luna-halo"></div><div class="luna-moon">☾</div><div class="luna-spark">✧</div><div class="luna-orbit"></div></div><div class="luna-copy"><div class="section-kicker">YOUR GENTLE GUIDE</div><h2>Meet <em>Luna.</em></h2><p class="luna-quote">“Mình không ở đây để quyết định thay bạn. Mình ở đây để cùng bạn nhìn thấy những điều có thể bạn đã bỏ quên trong chính trái tim mình.”</p><p>Luna sử dụng AI để kết nối ý nghĩa của từng lá bài, vị trí và câu hỏi của bạn thành một câu chuyện liền mạch — dịu dàng, sâu sắc và gần gũi.</p><div class="luna-pills"><span>✧ AI insight</span><span>☾ Giọng đọc tự nhiên</span><span>♡ Không phán xét</span></div></div></div></section>
   </main>
-  <footer class="footer wrap"><a class="brand" href="#home"><span class="brand-mark">✧</span><span>MYSTIC <i>TAROT</i><small>THE CELESTIAL READING</small></span></a><p>Tarot is a mirror, not a verdict. Trust your own light.</p><span>© 2026 MYSTIC TAROT</span></footer>
+  <footer class="footer wrap"><a class="brand" href="#home"><span class="brand-mark">✧</span><span>OREO <i>TAROT MYSTIC</i><small>LUNA · THE CELESTIAL READING</small></span></a><p>Tarot is a mirror, not a verdict. Trust your own light.</p><small>Trải bài mang tính chiêm nghiệm và giải trí, không thay thế tư vấn chuyên môn.</small><span>© 2026 OREO TAROT MYSTIC</span></footer>
   <div class="toast" id="toast" role="status"></div>
-  <div class="modal hidden" id="cardModal"><div class="modal-backdrop"></div><div class="modal-box"><button class="modal-close" id="modalClose">×</button><img id="modalImage" alt=""><div><span class="section-kicker" id="modalArcana"></span><h3 id="modalTitle"></h3><p id="modalKeywords"></p></div></div></div>
+  <div class="modal hidden" id="cardModal"><div class="modal-backdrop"></div><div class="modal-box"><button class="modal-close" id="modalClose">×</button><img id="modalImage" alt=""><div><span class="section-kicker" id="modalArcana"></span><h3 id="modalTitle"></h3><p id="modalKeywords"></p><button class="button button-ghost" id="toggleFavorite">♡ Thêm vào yêu thích</button></div></div></div>
   <script type="module" src="/js/app.js"></script>
 </body></html>
